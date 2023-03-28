@@ -1,7 +1,17 @@
-const { fetchCategories } = require("../models/app.models");
+const { fetchCategories, fetchReviewById } = require("../models/app.models");
 
 exports.getCategories = (req, res) => {
-  console.log("inside controller");
-
   fetchCategories().then((categories) => res.status(200).send({ categories }));
+};
+
+exports.getReviewById = (req, res, next) => {
+  const { review_id } = req.params;
+
+  fetchReviewById(review_id)
+    .then((review) => {
+      res.status(200).send({ review });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };

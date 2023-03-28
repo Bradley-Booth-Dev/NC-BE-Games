@@ -34,7 +34,48 @@ describe("/api/categories", () => {
         });
       });
   });
-  it("GET 404: Should respond with a 404 error if the url is invalid ", () => {
+});
+
+describe("/api/reviews/:review_id", () => {
+  it(`'GET 200: Should return a review object, which should have the following properties: 
+  review_id'title','review_body','designer','review_img_url','votes','category','owner','created_at'`, () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body: { review } }) => {
+        expect(review).toMatchObject({
+          review_id: expect.any(Number),
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: expect.any(Number),
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        });
+      });
+  });
+  it("GET 400: Should return bad request if request isn't vaild", () => {
+    return request(app)
+      .get("/api/reviews/dogs")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  it("GET 404: Should return a 404 error is the ID is not found", () => {
+    return request(app)
+      .get("/api/reviews/20")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ status: 404, msg: "Review not found" });
+      });
+  });
+});
+
+describe("404", () => {
+  it(": should return 404 if the url is invalid", () => {
     return request(app)
       .get("/*")
       .expect(404)

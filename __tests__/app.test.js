@@ -82,7 +82,6 @@ describe("/api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body: { reviews } }) => {
-        //console.log(reviews, "TEST");
         expect(reviews.length).toBe(13);
         reviews.forEach((review) => {
           expect(review).toMatchObject({
@@ -96,6 +95,16 @@ describe("/api/reviews", () => {
             designer: expect.any(String),
             comment_count: expect.any(String),
           });
+        });
+      });
+  });
+  it("GET200: reviews should be sorted by date in descending order", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toBeSortedBy("created_at", {
+          descending: true,
         });
       });
   });

@@ -75,6 +75,41 @@ describe("/api/reviews/:review_id", () => {
   });
 });
 
+describe("/api/reviews", () => {
+  it(`GET 200: should return an array of review objects which should have the following properties:
+  'owner','title','review_id','category','review_img_url','created_at','votes','designer','comment_count'`, () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews.length).toBe(13);
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(String),
+          });
+        });
+      });
+  });
+  it("GET200: reviews should be sorted by date in descending order", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+});
+
 describe("404", () => {
   it(": should return 404 if the url is invalid", () => {
     return request(app)

@@ -2,6 +2,7 @@ const express = require("express");
 const {
   getCategories,
   getReviewById,
+  getReviews,
 } = require("./controllers/app.controllers");
 const {
   handleIdNotFound404Error,
@@ -16,6 +17,8 @@ app.get("/api", (req, res) => {
 app.get("/api/categories", getCategories);
 
 app.get("/api/reviews/:review_id", getReviewById);
+
+app.get("/api/reviews", getReviews);
 
 app.use(handlePSQL400Error);
 app.use(handleIdNotFound404Error);

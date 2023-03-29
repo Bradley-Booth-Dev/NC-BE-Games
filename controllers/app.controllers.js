@@ -1,4 +1,8 @@
-const { fetchCategories, fetchReviewById } = require("../models/app.models");
+const {
+  fetchCategories,
+  fetchReviewById,
+  fetchReviews,
+} = require("../models/app.models");
 
 exports.getCategories = (req, res) => {
   fetchCategories().then((categories) => res.status(200).send({ categories }));
@@ -14,4 +18,10 @@ exports.getReviewById = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.getReviews = (req, res, next) => {
+  fetchReviews().then((reviews) => {
+    res.status(200).send({ reviews });
+  });
 };

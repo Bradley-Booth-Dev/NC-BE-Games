@@ -38,6 +38,26 @@ exports.fetchReviews = () => {
     });
 };
 
-exports.fetchCommentsFromReviewId = () => {
-  //CONTINUE HERE//
+exports.fetchCommentsFromReviewId = (review_id, fetchReviewById) => {
+  return db
+    .query(
+      `
+      SELECT reviews.title, comments.*
+      FROM reviews
+      INNER JOIN comments ON reviews.review_id = comments.review_id
+      WHERE reviews.review_id = $1
+
+      ORDER BY comments.created_at DESC
+      ;
+      `,
+      [review_id]
+    )
+    .then(({ rows }) => {
+      if (rows.length) {
+        return rows;
+      }
+      return fetchReviewById(review_id).then(() => {
+        return rows;
+      });
+    });
 };

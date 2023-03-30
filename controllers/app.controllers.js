@@ -1,3 +1,4 @@
+const comments = require("../db/data/test-data/comments");
 const {
   fetchCategories,
   fetchReviewById,
@@ -29,5 +30,13 @@ exports.getReviews = (req, res, next) => {
 
 exports.getCommentsFromReviewId = (req, res, next) => {
   const { review_id } = req.params;
-  console.log(review_id, "CONT");
+
+  fetchCommentsFromReviewId(review_id, fetchReviewById)
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
+    .catch((err) => {
+      console.log(err, " ERROR");
+      next(err);
+    });
 };

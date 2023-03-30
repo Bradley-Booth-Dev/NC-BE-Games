@@ -57,7 +57,8 @@ describe("/api/reviews/:review_id", () => {
         });
       });
   });
-  it("GET 400: Should return bad request if request isn't vaild", () => {
+
+  it("GET 400: Should return bad request if request isn't valid", () => {
     return request(app)
       .get("/api/reviews/dogs")
       .expect(400)
@@ -65,6 +66,7 @@ describe("/api/reviews/:review_id", () => {
         expect(body.msg).toBe("Bad request");
       });
   });
+
   it("GET 404: Should return a 404 error is the ID is not found", () => {
     return request(app)
       .get("/api/reviews/20")
@@ -98,7 +100,8 @@ describe("/api/reviews", () => {
         });
       });
   });
-  it("GET200: reviews should be sorted by date in descending order", () => {
+
+  it("GET 200: reviews should be sorted by date in descending order", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -108,8 +111,71 @@ describe("/api/reviews", () => {
         });
       });
   });
+  it("GET 400: Should return bad request if request isn't valid", () => {
+    return request(app)
+      .get("/api/reviews/dogs")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
 });
 
+describe("/api/reviews/:review_id/comments", () => {
+  it(`GET 200: should return  an array of comments for the given review_id of which each comment should have the following properties:
+  'comment_id','votes','created_at','author','body','review_id'`, () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments.length).toBe(3);
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            review_id: expect.any(Number),
+          });
+        });
+      });
+  });
+  it("GET 200: Should be with the most recent comments first ", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  it("GET 200: Should return a 200 with an empty array if there are no comments", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toEqual([]);
+      });
+  });
+  it("GET 400: Should return bad request if request isn't valid", () => {
+    return request(app)
+      .get("/api/reviews/dogs")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  it("GET 404: returns 404 if review doesnt exist", () => {
+    return request(app)
+      .get("/api/reviews/20")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ status: 404, msg: "Review not found" });
+      });
+  });
+});
 
 describe("404", () => {
   it(": should return 404 if the url is invalid", () => {

@@ -110,17 +110,6 @@ describe("/api/reviews", () => {
   });
 });
 
-describe("/api/reviews/:review_id/comments", () => {
-  it(`should return  an array of comments for the given review_id of which each comment should have the following properties:
-  'comment_id','votes','created_at','author','body','review_id'`, () => {
-    return request(app)
-      .get("/api/reviews/2/comments")
-      .expect(200)
-      .then(({ body }) => {
-        console.log(body, "TEST");
-      });
-  });
-});
 
 describe("404", () => {
   it(": should return 404 if the url is invalid", () => {

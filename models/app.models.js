@@ -37,3 +37,6 @@ exports.fetchReviews = () => {
       return rows;
     });
 };
+
+exports.fetchCommentsFromReviewId = () => {
+};

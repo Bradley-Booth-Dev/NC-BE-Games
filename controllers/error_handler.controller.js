@@ -23,14 +23,6 @@ exports.handleUsernameNotFoundError = (err, req, res, next) => {
 };
 
 exports.handleCommentMissing400Error = (err, req, res, next) => {
-  if (err.status === 400 && err.msg === "Unnecessary information provided") {
-    res.status(400).send({ status: 400, msg: "Unnecessary information provided" });
-  } else {
-    next(err);
-  }
-};
-
-exports.unnecessaryInfoProvided400Error = (err, req, res, next) => {
   if (err.status === 400 && err.msg === "Comment body is missing") {
     res.status(400).send({ status: 400, msg: "Comment body is missing" });
   } else {

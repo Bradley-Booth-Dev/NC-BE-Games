@@ -11,7 +11,6 @@ const {
   handlePSQL400Error,
   handleUsernameNotFoundError,
   handleCommentMissing400Error,
-  unnecessaryInfoProvided400Error
 } = require("./controllers/error_handler.controller");
 const app = express();
 
@@ -31,7 +30,6 @@ app.get("/api/reviews/:review_id/comments", getCommentsFromReviewId);
 
 app.post("/api/reviews/:review_id/comments", postComment);
 
-app.use(unnecessaryInfoProvided400Error)
 app.use(handlePSQL400Error);
 app.use(handleCommentMissing400Error);
 app.use(handleUsernameNotFoundError);

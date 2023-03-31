@@ -177,7 +177,7 @@ describe("/api/reviews/:review_id/comments", () => {
   });
 });
 
-describe.only("/api/reviews/:review_id/comments", () => {
+describe("/api/reviews/:review_id/comments", () => {
   it("POST 201: should return posted comment", () => {
     return request(app)
       .post("/api/reviews/1/comments")

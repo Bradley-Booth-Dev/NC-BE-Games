@@ -177,6 +177,74 @@ describe("/api/reviews/:review_id/comments", () => {
   });
 });
 
+describe.only("/api/reviews/:review_id/comments", () => {
+  it("POST 201: should return posted comment", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({
+        username: "bainesface",
+        body: "This is the best board game ever",
+      })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          username: "bainesface",
+          body: "This is the best board game ever",
+        });
+      });
+  });
+  it("POST 404:should return a 404 if the review doesnt exist", () => {
+    return request(app)
+      .post("/api/reviews/99999/comments")
+      .send({
+        username: "bainesface",
+        body: "This is the best board game ever",
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ status: 404, msg: "Review not found" });
+      });
+  });
+  it("POST 404: should return a 404 when given username not in table ", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({
+        username: "fullenglish3",
+        body: "This game is awesome!",
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ status: 404, msg: "Username not found" });
+      });
+  });
+  it("POST 400 should respond with an error when missing information e.g body", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "bainesface" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          status: 400,
+          msg: "Comment body is missing",
+        });
+      });
+  });
+  it("POST 400: responds with error when given a bad review id", () => {
+    return request(app)
+      .post("/api/reviews/notAnId/comments")
+      .send({
+        username: "bainesface",
+        body: "This is the best board game ever",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: "Bad request",
+        });
+      });
+  });
+});
+
 describe("404", () => {
   it(": should return 404 if the url is invalid", () => {
     return request(app)

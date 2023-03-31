@@ -4,6 +4,7 @@ const {
   fetchReviewById,
   fetchReviews,
   fetchCommentsFromReviewId,
+  createComment,
 } = require("../models/app.models");
 
 exports.getCategories = (req, res) => {
@@ -36,7 +37,20 @@ exports.getCommentsFromReviewId = (req, res, next) => {
       res.status(200).send({ comments });
     })
     .catch((err) => {
-      console.log(err, " ERROR");
+      next(err);
+    });
+};
+
+exports.postComment = (req, res, next) => {
+  const { review_id } = req.params;
+  const author = req.body.username;
+  const body = req.body.body;
+
+  createComment(author, body, review_id)
+    .then((postedComment) => {
+      res.status(201).send(postedComment);
+    })
+    .catch((err) => {
       next(err);
     });
 };

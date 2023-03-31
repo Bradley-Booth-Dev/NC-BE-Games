@@ -1,10 +1,11 @@
-const comments = require("../db/data/test-data/comments");
+const comments = require("../db/comments");
 const {
   fetchCategories,
   fetchReviewById,
   fetchReviews,
   fetchCommentsFromReviewId,
   createComment,
+  patchCommentsFromReviewId,
 } = require("../models/app.models");
 
 exports.getCategories = (req, res) => {
@@ -49,6 +50,19 @@ exports.postComment = (req, res, next) => {
   createComment(author, body, review_id)
     .then((postedComment) => {
       res.status(201).send({ comment: postedComment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.patchComment = (req, res, next) => {
+  const { review_id } = req.params;
+  const inc_vote = req.body.inc_votes;
+
+  patchCommentsFromReviewId(review_id, inc_vote)
+    .then((updatedReview) => {
+      res.status(200).send({ review: updatedReview });
     })
     .catch((err) => {
       next(err);

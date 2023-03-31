@@ -5,6 +5,7 @@ const {
   getReviews,
   getCommentsFromReviewId,
   postComment,
+  patchComment,
 } = require("./controllers/app.controllers");
 const {
   handleIdNotFound404Error,
@@ -30,10 +31,12 @@ app.get("/api/reviews/:review_id/comments", getCommentsFromReviewId);
 
 app.post("/api/reviews/:review_id/comments", postComment);
 
+app.patch("/api/reviews/:review_id", patchComment);
+
 app.use(handlePSQL400Error);
+app.use(handleIdNotFound404Error);
 app.use(handleCommentMissing400Error);
 app.use(handleUsernameNotFoundError);
-app.use(handleIdNotFound404Error);
 app.use("/*", (req, res) => {
   res.status(404).send({ msg: "Path not found" });
 });

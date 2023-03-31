@@ -64,7 +64,6 @@ exports.fetchCommentsFromReviewId = (review_id, fetchReviewById) => {
 };
 
 exports.createComment = (author, body, review_id) => {
-
   if (!body) {
     return Promise.reject({ status: 400, msg: "Comment body is missing" });
   }
@@ -103,6 +102,36 @@ exports.createComment = (author, body, review_id) => {
         .then(({ rows }) => {
           const { author, body } = rows[0];
           return { username: author, body };
+        });
+    });
+};
+
+exports.patchCommentsFromReviewId = (review_id, inc_vote) => {
+  return db
+    .query(
+      `
+    SELECT * FROM reviews WHERE review_id = $1;
+    `,
+      [review_id]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Review not found" });
+      }
+
+      return db
+        .query(
+          `
+          UPDATE reviews 
+          SET votes = votes + $1
+          WHERE review_id = $2
+          RETURNING *
+          ;`,
+          [inc_vote, review_id]
+        )
+        .then(({ rows }) => {
+          const updatedReview = rows[0];
+          return updatedReview;
         });
     });
 };

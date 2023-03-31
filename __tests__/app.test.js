@@ -370,7 +370,7 @@ describe("DELETE /api/comments/:comment_id ", () => {
         expect(body).toEqual({});
       });
   });
-  it("DELETE 200: return error if comment doesnt exist", () => {
+  it("DELETE 404: return error if comment doesnt exist", () => {
     return request(app)
       .delete("/api/comments/999")
       .expect(404)

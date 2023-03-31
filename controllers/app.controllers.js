@@ -27,9 +27,14 @@ exports.getReviewById = (req, res, next) => {
 };
 
 exports.getReviews = (req, res, next) => {
-  fetchReviews().then((reviews) => {
-    res.status(200).send({ reviews });
-  });
+  const { category, sort_by = "created_at", order = "desc" } = req.query;
+  fetchReviews(category, sort_by, order)
+    .then((reviews) => {
+      res.status(200).send({ reviews });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getCommentsFromReviewId = (req, res, next) => {

@@ -57,7 +57,6 @@ describe("/api/reviews/:review_id", () => {
         });
       });
   });
-
   it("GET 400: Should return bad request if request isn't valid", () => {
     return request(app)
       .get("/api/reviews/dogs")
@@ -69,7 +68,6 @@ describe("/api/reviews/:review_id", () => {
         });
       });
   });
-
   it("GET 404: Should return a 404 error is the ID is not found", () => {
     return request(app)
       .get("/api/reviews/20")
@@ -103,14 +101,64 @@ describe("/api/reviews", () => {
         });
       });
   });
-
-  it("GET 200: reviews should be sorted by date in descending order", () => {
+  it("GET 200: reviews should be sorted by date in descending order as default", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
       .then(({ body: { reviews } }) => {
         expect(reviews).toBeSortedBy("created_at", {
           descending: true,
+        });
+      });
+  });
+  it("GET 200: reviews should be sorted by date in ascending order", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=created_at&order=asc")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toBeSortedBy("created_at", {
+          descending: false,
+        });
+      });
+  });
+  it("GET 200: reviews should be sorted by category in descending order as default", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=category")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toBeSortedBy("category", {
+          descending: true,
+        });
+      });
+  });
+  it("GET 200", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=category&order=asc")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toBeSortedBy("category", {
+          descending: false,
+        });
+      });
+  });
+  it("GET 200: Should return in descending order by default if sort order isn't valid", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=category&order=dogs")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toBeSortedBy("category", {
+          descending: true,
+        });
+      });
+  });
+  it("GET 400: Should return bad request if query isn't valid", () => {
+    return request(app)
+      .get("/api/reviews/reviews?sort_by=dogs")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          status: 404,
+          msg: "Bad request",
         });
       });
   });
@@ -126,6 +174,8 @@ describe("/api/reviews", () => {
       });
   });
 });
+
+//ADD querey tests
 
 describe("/api/reviews/:review_id/comments", () => {
   it(`GET 200: should return  an array of comments for the given review_id of which each comment should have the following properties:
@@ -401,7 +451,6 @@ describe("GET /api/users", () => {
       .get("/api/users")
       .expect(200)
       .then(({ body: { users } }) => {
-        console.log(users);
         expect(users.length).toBe(4);
         users.forEach((user) => {
           expect(user).toMatchObject({
@@ -409,6 +458,17 @@ describe("GET /api/users", () => {
             name: expect.any(String),
             avatar_url: expect.any(String),
           });
+        });
+      });
+  });
+  it("GET 400: Should return bad request if request isn't valid", () => {
+    return request(app)
+      .get("/api/reviews/dogs")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          status: 404,
+          msg: "Bad request",
         });
       });
   });

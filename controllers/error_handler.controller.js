@@ -1,6 +1,6 @@
 exports.handlePSQL400Error = (err, req, res, next) => {
   if (err.code === "22P02") {
-    res.status(400).send({ msg: "Bad request" });
+    res.status(400).send({ status: 404, msg: "Bad request" });
   } else {
     next(err);
   }
@@ -25,6 +25,14 @@ exports.handleUsernameNotFoundError = (err, req, res, next) => {
 exports.handleCommentMissing400Error = (err, req, res, next) => {
   if (err.status === 400 && err.msg === "Comment body is missing") {
     res.status(400).send({ status: 400, msg: "Comment body is missing" });
+  } else {
+    next(err);
+  }
+};
+
+exports.handleCommentNotFound404Error = (err, req, res, next) => {
+  if (err.status === 404 && err.msg === "Comment not found") {
+    res.status(404).send({ status: 404, msg: "Comment not found" });
   } else {
     next(err);
   }

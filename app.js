@@ -6,12 +6,14 @@ const {
   getCommentsFromReviewId,
   postComment,
   patchComment,
+  deleteComment,
 } = require("./controllers/app.controllers");
 const {
   handleIdNotFound404Error,
   handlePSQL400Error,
   handleUsernameNotFoundError,
   handleCommentMissing400Error,
+  handleCommentNotFound404Error,
 } = require("./controllers/error_handler.controller");
 const app = express();
 
@@ -33,6 +35,9 @@ app.post("/api/reviews/:review_id/comments", postComment);
 
 app.patch("/api/reviews/:review_id", patchComment);
 
+app.delete("/api/comments/:comment_id", deleteComment);
+
+app.use(handleCommentNotFound404Error);
 app.use(handlePSQL400Error);
 app.use(handleIdNotFound404Error);
 app.use(handleCommentMissing400Error);

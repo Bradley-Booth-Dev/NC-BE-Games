@@ -46,17 +46,6 @@ exports.postComment = (req, res, next) => {
   const author = req.body.username;
   const body = req.body.body;
 
-  const unnecessaryKeys = Object.keys(req.body).filter(
-    (key) => key !== "username" && key !== "body"
-  );
-
-  if (unnecessaryKeys.length) {
-    return next({
-      status: 400,
-      msg: "Unnecessary information provided",
-    });
-  }
-
   createComment(author, body, review_id)
     .then((postedComment) => {
       res.status(201).send({ comment: postedComment });

@@ -193,6 +193,22 @@ describe("/api/reviews/:review_id/comments", () => {
         });
       });
   });
+  it("POST 201 should respond with a 201 ignoring any extra data given", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({
+        username: "bainesface",
+        body: "This is the best board game ever",
+        bonusKey: "DROP TABLES",
+      })
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual({
+          username: "bainesface",
+          body: "This is the best board game ever",
+        });
+      });
+  });
   it("POST 404:should return a 404 if the review doesnt exist", () => {
     return request(app)
       .post("/api/reviews/99999/comments")
@@ -215,22 +231,6 @@ describe("/api/reviews/:review_id/comments", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body).toEqual({ status: 404, msg: "Username not found" });
-      });
-  });
-  it("POST 400 should respond with an error when given too much information e.g body", () => {
-    return request(app)
-      .post("/api/reviews/1/comments")
-      .send({
-        username: "bainesface",
-        body: "This is the best board game ever",
-        bonusKey: "DROP TABLES",
-      })
-      .expect(400)
-      .then(({ body }) => {
-        expect(body).toEqual({
-          status: 400,
-          msg: "Unnecessary information provided",
-        });
       });
   });
   it("POST 400 should respond with an error when missing information e.g body", () => {

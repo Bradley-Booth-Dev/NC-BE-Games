@@ -261,6 +261,103 @@ describe("/api/reviews/:review_id/comments", () => {
   });
 });
 
+describe("PATCH /api/reviews/:review_id", () => {
+  it("PATCH 200: should return an object with updated votes", () => {
+    return request(app)
+      .patch("/api/reviews/4")
+      .send({ inc_votes: 11 })
+      .expect(200)
+      .then(({ body: { review } }) => {
+        expect(review).toEqual({
+          review_id: 4,
+          title: "Dolor reprehenderit",
+          category: "social deduction",
+          designer: "Gamey McGameface",
+          owner: "mallionaire",
+          review_body:
+            "Consequat velit occaecat voluptate do. Dolor pariatur fugiat sint et proident ex do consequat est. Nisi minim laboris mollit cupidatat et adipisicing laborum do. Sint sit tempor officia pariatur duis ullamco labore ipsum nisi voluptate nulla eu veniam. Et do ad id dolore id cillum non non culpa. Cillum mollit dolor dolore excepteur aliquip. Cillum aliquip quis aute enim anim ex laborum officia. Aliqua magna elit reprehenderit Lorem elit non laboris irure qui aliquip ad proident. Qui enim mollit Lorem labore eiusmod",
+          review_img_url:
+            "https://images.pexels.com/photos/278918/pexels-photo-278918.jpeg?w=700&h=700",
+          created_at: "2021-01-22T11:35:50.936Z",
+          votes: 18,
+        });
+      });
+  });
+  it("PATCH 200: should return an object with updated subtracted votes", () => {
+    return request(app)
+      .patch("/api/reviews/4")
+      .send({ inc_votes: -10 })
+      .expect(200)
+      .then(({ body: { review } }) => {
+        expect(review).toEqual({
+          review_id: 4,
+          title: "Dolor reprehenderit",
+          category: "social deduction",
+          designer: "Gamey McGameface",
+          owner: "mallionaire",
+          review_body:
+            "Consequat velit occaecat voluptate do. Dolor pariatur fugiat sint et proident ex do consequat est. Nisi minim laboris mollit cupidatat et adipisicing laborum do. Sint sit tempor officia pariatur duis ullamco labore ipsum nisi voluptate nulla eu veniam. Et do ad id dolore id cillum non non culpa. Cillum mollit dolor dolore excepteur aliquip. Cillum aliquip quis aute enim anim ex laborum officia. Aliqua magna elit reprehenderit Lorem elit non laboris irure qui aliquip ad proident. Qui enim mollit Lorem labore eiusmod",
+          review_img_url:
+            "https://images.pexels.com/photos/278918/pexels-photo-278918.jpeg?w=700&h=700",
+          created_at: "2021-01-22T11:35:50.936Z",
+          votes: -3,
+        });
+      });
+  });
+  it("PATCH 200: should update the votes even when given unnecessary data", () => {
+    return request(app)
+      .patch("/api/reviews/4")
+      .send({ inc_votes: 11, bonus_key: "Delete All" })
+      .expect(200)
+      .then(({ body: { review } }) => {
+        expect(review).toEqual({
+          review_id: 4,
+          title: "Dolor reprehenderit",
+          category: "social deduction",
+          designer: "Gamey McGameface",
+          owner: "mallionaire",
+          review_body:
+            "Consequat velit occaecat voluptate do. Dolor pariatur fugiat sint et proident ex do consequat est. Nisi minim laboris mollit cupidatat et adipisicing laborum do. Sint sit tempor officia pariatur duis ullamco labore ipsum nisi voluptate nulla eu veniam. Et do ad id dolore id cillum non non culpa. Cillum mollit dolor dolore excepteur aliquip. Cillum aliquip quis aute enim anim ex laborum officia. Aliqua magna elit reprehenderit Lorem elit non laboris irure qui aliquip ad proident. Qui enim mollit Lorem labore eiusmod",
+          review_img_url:
+            "https://images.pexels.com/photos/278918/pexels-photo-278918.jpeg?w=700&h=700",
+          created_at: "2021-01-22T11:35:50.936Z",
+          votes: 18,
+        });
+      });
+  });
+  it("PATCH 400: should return an error when given wrong information type", () => {
+    return request(app)
+      .patch("/api/reviews/4")
+      .send({ inc_votes: "Eleven" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: "Bad request",
+        });
+      });
+  });
+  it("PATCH 400: should return an error when given invalid ID", () => {
+    return request(app)
+      .patch("/api/reviews/notAnId")
+      .send({ inc_votes: 11 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          msg: "Bad request",
+        });
+      });
+  });
+  it("POST 404:should return a 404 if the review doesnt exist", () => {
+    return request(app)
+      .patch("/api/reviews/9999")
+      .send({ inc_votes: 7 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ status: 404, msg: "Review not found" });
+      });
+  });
+});
+
 describe("404", () => {
   it(": should return 404 if the url is invalid", () => {
     return request(app)

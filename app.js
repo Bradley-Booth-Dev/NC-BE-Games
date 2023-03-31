@@ -7,6 +7,7 @@ const {
   postComment,
   patchComment,
   deleteComment,
+  getUsers,
 } = require("./controllers/app.controllers");
 const {
   handleIdNotFound404Error,
@@ -36,6 +37,8 @@ app.post("/api/reviews/:review_id/comments", postComment);
 app.patch("/api/reviews/:review_id", patchComment);
 
 app.delete("/api/comments/:comment_id", deleteComment);
+
+app.get("/api/users", getUsers);
 
 app.use(handleCommentNotFound404Error);
 app.use(handlePSQL400Error);

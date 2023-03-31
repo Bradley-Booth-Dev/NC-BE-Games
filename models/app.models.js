@@ -157,3 +157,17 @@ exports.deleteCommentFromId = (comment_id) => {
       );
     });
 };
+
+exports.fetchUsers = () => {
+  console.log("in model");
+  return db
+    .query(
+      `
+      SELECT * FROM users;
+    `
+    )
+    .then(({ rows }) => {
+      
+      return rows;
+    });
+};

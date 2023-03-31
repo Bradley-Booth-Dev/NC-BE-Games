@@ -18,26 +18,43 @@ exports.fetchReviewById = (review_id) => {
     });
 };
 
-exports.fetchReviews = () => {
-  return db
-    .query(
-      `
-  SELECT reviews.*,
-  
-  COUNT(comments.review_id)
-  AS comment_count
-  FROM reviews
-  
-  LEFT JOIN comments
-  ON reviews.review_id = comments.review_id 
-  GROUP BY reviews.review_id
-  ORDER BY reviews.created_at DESC
-;`
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+exports.fetchReviews = (category, sort_by, order) => {
+  const validColumns = [
+    "owner",
+    "title",
+    "review_id",
+    "category",
+    "review_img_url",
+    "created_at",
+    "votes",
+    "designer",
+  ];
+  if (!validColumns.includes(sort_by)) {
+    sort_by = "created_at";
+    order = "desc";
+  } else {
+    order = order === "asc" ? "asc" : "desc";
+  }
+
+  validColumns.push(order);
+
+  let queryString = `
+    SELECT reviews.*,
+    COUNT(comments.review_id) AS comment_count
+    FROM reviews
+    LEFT JOIN comments ON reviews.review_id = comments.review_id`;
+
+  if (category) queryString += ` WHERE reviews.category = '${category}'`;
+
+  queryString += ` GROUP BY reviews.review_id
+    ORDER BY ${sort_by} ${order}
+  ;`;
+
+  return db.query(queryString).then(({ rows }) => {
+    return rows;
+  });
 };
+
 
 exports.fetchCommentsFromReviewId = (review_id, fetchReviewById) => {
   return db
@@ -159,7 +176,6 @@ exports.deleteCommentFromId = (comment_id) => {
 };
 
 exports.fetchUsers = () => {
-  console.log("in model");
   return db
     .query(
       `
@@ -167,7 +183,6 @@ exports.fetchUsers = () => {
     `
     )
     .then(({ rows }) => {
-      
       return rows;
     });
 };

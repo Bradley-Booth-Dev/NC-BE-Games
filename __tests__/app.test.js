@@ -63,7 +63,10 @@ describe("/api/reviews/:review_id", () => {
       .get("/api/reviews/dogs")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Bad request");
+        expect(body).toEqual({
+          status: 404,
+          msg: "Bad request",
+        });
       });
   });
 
@@ -116,7 +119,10 @@ describe("/api/reviews", () => {
       .get("/api/reviews/dogs")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Bad request");
+        expect(body).toEqual({
+          status: 404,
+          msg: "Bad request",
+        });
       });
   });
 });
@@ -164,7 +170,10 @@ describe("/api/reviews/:review_id/comments", () => {
       .get("/api/reviews/dogs")
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Bad request");
+        expect(body).toEqual({
+          status: 404,
+          msg: "Bad request",
+        });
       });
   });
   it("GET 404: returns 404 if review doesnt exist", () => {
@@ -254,9 +263,7 @@ describe("/api/reviews/:review_id/comments", () => {
       })
       .expect(400)
       .then(({ body }) => {
-        expect(body).toEqual({
-          msg: "Bad request",
-        });
+        expect(body).toEqual({ status: 404, msg: "Bad request" });
       });
   });
 });
@@ -331,9 +338,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .send({ inc_votes: "Eleven" })
       .expect(400)
       .then(({ body }) => {
-        expect(body).toEqual({
-          msg: "Bad request",
-        });
+        expect(body).toEqual({ status: 404, msg: "Bad request" });
       });
   });
   it("PATCH 400: should return an error when given invalid ID", () => {
@@ -342,9 +347,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .send({ inc_votes: 11 })
       .expect(400)
       .then(({ body }) => {
-        expect(body).toEqual({
-          msg: "Bad request",
-        });
+        expect(body).toEqual({ status: 404, msg: "Bad request" });
       });
   });
   it("POST 404:should return a 404 if the review doesnt exist", () => {
@@ -354,6 +357,39 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body).toEqual({ status: 404, msg: "Review not found" });
+      });
+  });
+});
+
+describe("DELETE /api/comments/:comment_id ", () => {
+  it("DELETE 204: should delete the comment and return no content ", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+  it("DELETE 200: return error if comment doesnt exist", () => {
+    return request(app)
+      .delete("/api/comments/999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          status: 404,
+          msg: "Comment not found",
+        });
+      });
+  });
+  it("DELETE 400: return error if given incorrect comment_ID", () => {
+    return request(app)
+      .delete("/api/comments/notAnId")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          status: 404,
+          msg: "Bad request",
+        });
       });
   });
 });

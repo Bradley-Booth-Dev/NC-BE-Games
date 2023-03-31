@@ -64,6 +64,7 @@ exports.fetchCommentsFromReviewId = (review_id, fetchReviewById) => {
 };
 
 exports.createComment = (author, body, review_id) => {
+
   if (!body) {
     return Promise.reject({ status: 400, msg: "Comment body is missing" });
   }

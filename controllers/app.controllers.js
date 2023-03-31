@@ -7,6 +7,7 @@ const {
   createComment,
   patchCommentsFromReviewId,
   deleteCommentFromId,
+  fetchUsers,
 } = require("../models/app.models");
 
 exports.getCategories = (req, res) => {
@@ -76,6 +77,16 @@ exports.deleteComment = (req, res, next) => {
   deleteCommentFromId(comment_id)
     .then(() => {
       res.sendStatus(204);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.getUsers = (req, res, next) => {
+  fetchUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch((error) => {
       next(error);

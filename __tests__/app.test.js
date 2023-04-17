@@ -11,8 +11,59 @@ describe("/api", () => {
     return request(app)
       .get("/api")
       .expect(200)
-      .then((response) => {
-        expect(response.body.message).toBe("all ok");
+      .then(({ body: { endpoints } }) => {
+        expect(endpoints).toEqual([
+          {
+            path: "/api",
+            method: "GET",
+            description: "Returns a message to check if the API is working",
+          },
+          {
+            path: "/api/categories",
+            method: "GET",
+            description: "Returns all the categories",
+          },
+          {
+            path: "/api/reviews/:review_id",
+            method: "GET",
+            description: "Returns the review with the specified ID",
+          },
+          {
+            path: "/api/reviews",
+            method: "GET",
+            description: "Returns all the reviews",
+          },
+          {
+            path: "/api/reviews/:review_id/comments",
+            method: "GET",
+            description: "Returns all the comments for the specified review",
+          },
+          {
+            path: "/api/reviews/:review_id/comments",
+            method: "POST",
+            description: "Adds a new comment to the specified review",
+          },
+          {
+            path: "/api/reviews/:review_id",
+            method: "PATCH",
+            description: "Updates the specified review",
+          },
+          {
+            path: "/api/comments/:comment_id",
+            method: "DELETE",
+            description: "Deletes the specified comment",
+          },
+          {
+            path: "/api/users",
+            method: "GET",
+            description: "Returns all the users",
+          },
+          {
+            path: "/api/endpoints",
+            method: "GET",
+            description: "Returns all the available endpoints on the API",
+          },
+        ]);
       });
   });
 });

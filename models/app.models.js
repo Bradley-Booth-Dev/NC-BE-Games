@@ -19,42 +19,62 @@ exports.fetchReviewById = (review_id) => {
 };
 
 exports.fetchReviews = (category, sort_by, order) => {
-  const validColumns = [
-    "owner",
-    "title",
-    "review_id",
-    "category",
-    "review_img_url",
-    "created_at",
-    "votes",
-    "designer",
-  ];
-  if (!validColumns.includes(sort_by)) {
-    sort_by = "created_at";
-    order = "desc";
-  } else {
-    order = order === "asc" ? "asc" : "desc";
+  const queryValues = [];
+  let queryString =
+    "SELECT reviews.*, COUNT(comments.review_id) AS comment_count FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id";
+
+  if (category) {
+    queryValues.push(category);
+    queryString += " WHERE reviews.category = $1";
   }
 
-  validColumns.push(order);
+  queryString += " GROUP BY reviews.review_id";
 
-  let queryString = `
-    SELECT reviews.*,
-    COUNT(comments.review_id) AS comment_count
-    FROM reviews
-    LEFT JOIN comments ON reviews.review_id = comments.review_id`;
+  if (
+    sort_by &&
+    [
+      "owner",
+      "title",
+      "review_body",
+      "category",
+      "created_at",
+      "votes",
+      "comment_count",
+    ].includes(sort_by)
+  ) {
+    queryString += ` ORDER BY ${sort_by} ${order === "asc" ? "ASC" : "DESC"}`;
+  } else {
+    queryString += " ORDER BY created_at DESC";
+  }
 
-  if (category) queryString += ` WHERE reviews.category = '${category}'`;
-
-  queryString += ` GROUP BY reviews.review_id
-    ORDER BY ${sort_by} ${order}
-  ;`;
-
-  return db.query(queryString).then(({ rows }) => {
+  return db.query(queryString, queryValues).then(({ rows }) => {
     return rows;
   });
 };
 
+// exports.fetchReviews = (category, sort_by, order) => {
+//   const queryValues = [];
+//   let queryString = "SELECT reviews.*,";
+
+//   return db
+//     .query(
+//       `
+//   SELECT reviews.*,
+
+//   COUNT(comments.review_id)
+//   AS comment_count
+//   FROM reviews
+
+//   LEFT JOIN comments
+//   ON reviews.review_id = comments.review_id
+//   GROUP BY reviews.review_id
+//   ORDER BY reviews.created_at DESC
+// ;`
+//     )
+//     .then(({ rows }) => {
+//       return rows;
+//     });
+// };
 
 exports.fetchCommentsFromReviewId = (review_id, fetchReviewById) => {
   return db

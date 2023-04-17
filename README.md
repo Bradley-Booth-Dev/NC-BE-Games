@@ -8,3 +8,6 @@ Development
 
 - Create .env.development file, make sure to add to git ignore.
 - Place 'PGDATABASE=nc_games' inside the file
+
+hosted link:
+https://nc-games-lua8.onrender.com/api

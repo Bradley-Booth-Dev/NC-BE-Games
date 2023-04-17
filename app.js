@@ -71,11 +71,6 @@ app.get("/api/", (req, res) => {
       method: "GET",
       description: "Returns all the users",
     },
-    {
-      path: "/api/endpoints",
-      method: "GET",
-      description: "Returns all the available endpoints on the API",
-    },
   ];
 
   res.status(200).send({ endpoints });

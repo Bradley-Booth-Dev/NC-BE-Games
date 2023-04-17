@@ -58,11 +58,6 @@ describe("/api", () => {
             method: "GET",
             description: "Returns all the users",
           },
-          {
-            path: "/api/endpoints",
-            method: "GET",
-            description: "Returns all the available endpoints on the API",
-          },
         ]);
       });
   });

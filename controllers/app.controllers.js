@@ -8,6 +8,7 @@ const {
   patchCommentsFromReviewId,
   deleteCommentFromId,
   fetchUsers,
+  fetchCommentCount,
 } = require("../models/app.models");
 
 exports.getCategories = (req, res) => {
@@ -17,9 +18,9 @@ exports.getCategories = (req, res) => {
 exports.getReviewById = (req, res, next) => {
   const { review_id } = req.params;
 
-  fetchReviewById(review_id)
-    .then((review) => {
-      res.status(200).send({ review });
+  Promise.all([fetchReviewById(review_id), fetchCommentCount(review_id)])
+    .then(([review, comment_count]) => {
+      res.status(200).send({ review: { ...review, comment_count } });
     })
     .catch((err) => {
       next(err);

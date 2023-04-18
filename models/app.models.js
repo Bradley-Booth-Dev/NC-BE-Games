@@ -18,6 +18,14 @@ exports.fetchReviewById = (review_id) => {
     });
 };
 
+exports.fetchCommentCount = (review_id) => {
+  return db
+    .query(`SELECT COUNT(*) as comment_count FROM comments WHERE review_id = $1;`, [review_id])
+    .then(({ rows }) => {
+      return parseInt(rows[0].comment_count);
+    });
+};
+
 exports.fetchReviews = (category, sort_by, order) => {
   const queryValues = [];
   let queryString =

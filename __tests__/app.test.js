@@ -103,6 +103,26 @@ describe("/api/reviews/:review_id", () => {
         });
       });
   });
+  it("GET 200: Should return a review object with comment_count field", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body: { review } }) => {
+        expect(review).toMatchObject({
+          review_id: 1,
+          title: "Agricola",
+          designer: "Uwe Rosenberg",
+          owner: "mallionaire",
+          review_img_url:
+            "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
+          review_body: "Farmyard fun!",
+          category: "euro game",
+          created_at: "2021-01-18T10:00:20.514Z",
+          votes: 1,
+          comment_count: expect.any(Number),
+        });
+      });
+  });
   it("GET 400: Should return bad request if request isn't valid", () => {
     return request(app)
       .get("/api/reviews/dogs")

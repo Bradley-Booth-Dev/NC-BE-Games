@@ -151,7 +151,7 @@ exports.createComment = (author, body, review_id) => {
     });
 };
 
-exports.patchCommentsFromReviewId = (review_id, inc_vote) => {
+exports.patchVotesFromReviewId = (review_id, inc_vote) => {
   return db
     .query(
       `

@@ -7,7 +7,7 @@ const {
   getReviews,
   getCommentsFromReviewId,
   postComment,
-  patchComment,
+  patchVotes,
   deleteComment,
   getUsers,
 } = require("./controllers/app.controllers");
@@ -86,7 +86,7 @@ app.get("/api/reviews/:review_id/comments", getCommentsFromReviewId);
 
 app.post("/api/reviews/:review_id/comments", postComment);
 
-app.patch("/api/reviews/:review_id", patchComment);
+app.patch("/api/reviews/:review_id", patchVotes);
 
 app.delete("/api/comments/:comment_id", deleteComment);
 

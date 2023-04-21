@@ -5,7 +5,7 @@ const {
   fetchReviews,
   fetchCommentsFromReviewId,
   createComment,
-  patchCommentsFromReviewId,
+  patchVotesFromReviewId,
   deleteCommentFromId,
   fetchUsers,
   fetchCommentCount,
@@ -64,11 +64,11 @@ exports.postComment = (req, res, next) => {
     });
 };
 
-exports.patchComment = (req, res, next) => {
+exports.patchVotes = (req, res, next) => {
   const { review_id } = req.params;
   const inc_vote = req.body.inc_votes;
 
-  patchCommentsFromReviewId(review_id, inc_vote)
+  patchVotesFromReviewId(review_id, inc_vote)
     .then((updatedReview) => {
       res.status(200).send({ review: updatedReview });
     })
